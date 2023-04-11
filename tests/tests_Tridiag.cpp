@@ -95,8 +95,9 @@ TEST(solver, slae3) {
         ASSERT_DOUBLE_EQ(x[i], x_ref[i]);
     }
 }
-
+/*
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
+*/

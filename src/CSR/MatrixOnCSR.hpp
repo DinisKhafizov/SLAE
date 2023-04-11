@@ -29,7 +29,7 @@ public:
 		return 0;
 	}
 
-	std::vector<double> operator*(std::vector<double> &vec) const {
+	std::vector<double> operator*(const std::vector<double> &vec) const {
 	    std::vector<double> res(ROWS);	
 		for (int i = 0; i < ROWS; ++i) {
 			for (int j = rows[i]; j < rows[i + 1]; ++j) {

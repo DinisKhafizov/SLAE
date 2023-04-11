@@ -5,8 +5,9 @@
 #include <cmath>
 #include <vector>
 #include "CSR/MatrixOnCSR.hpp"
+#include "Acceleration/Cheb_Accel.hpp"
 
-std::vector<double> JacobiMethod(CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance) {
+std::vector<double> JM(CSR A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance) {
 
     int N = A.GetN(); //shape of matrix
 
@@ -42,26 +43,26 @@ std::vector<double> JacobiMethod(CSR &A, const std::vector<double> &x_0, const s
 	
     }
 
-	for (int i = 0; i < N; ++i) {
-		for(int k = A.GetRow()[i]; k < A.GetRow()[i + 1]; ++k) {
-			if (A.GetCol()[k] == i) {
-				A.GetVal()[k] = diag[i];
-			}
-		}
-	}//returning A its values
-
     return x;
 
 
 }
 
-std::vector<double> GaussSeidelMethod(CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance) {
+std::vector<double> GSM(CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance) {
 
 	int N = A.GetN(), u; 
 
 	double norm = 100, Ux = 0, Lx = 0; 
 	
-	std::vector<double> x = x_0, vec(N), x_last;
+	std::vector<double> x = x_0, vec(N), x_last, diag(N);
+
+	for (int i = 0; i < N; ++i) {
+		for(int k = A.GetRow()[i]; k < A.GetRow()[i + 1]; ++k) {
+			if (A.GetCol()[k] == i) { //nulling diag elements of A (without changing Rows and Cols vectors of CSR) and writing them to vector diag
+				diag[i] = A.GetVal()[k];
+			}
+		}
+	}
 
 	while (norm > tolerance) {
 
@@ -71,7 +72,7 @@ std::vector<double> GaussSeidelMethod(CSR &A, const std::vector<double> &x_0, co
 			Ux += A.GetVal()[k] *  x[A.GetCol()[k]];
 		}
 
-		x[0] = (b[0] - Ux) / A(0, 0);
+		x[0] = (b[0] - Ux) / diag[0];
 
 		for (int j = 1; j < N; ++j) {
 
@@ -88,7 +89,7 @@ std::vector<double> GaussSeidelMethod(CSR &A, const std::vector<double> &x_0, co
 				Ux += A.GetVal()[k] * x[A.GetCol()[k]];
 			}
 
-			x[j] = (b[j] - Ux - Lx) / A(j, j);
+			x[j] = (b[j] - Ux - Lx) / diag[j];
 
 		}
 
@@ -102,18 +103,16 @@ std::vector<double> GaussSeidelMethod(CSR &A, const std::vector<double> &x_0, co
     return x;
 }
 
-std::vector<double> SimpleIterationMethod(const CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, 
-const double tolerance, const double tau){
+std::vector<double> SIM(const CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, 
+const double tolerance, const double tau) {
 
-	int N = A.GetN(); //Simple.
+	int N = A.GetN();
 
-	double norm = 100, Ux = 0, Lx = 0; 
+	double norm = 0;
 	
-	std::vector<double> x = x_0, vec(N), x_last;
+	std::vector<double> x = x_0, vec(N);
 
 	while(norm > tolerance) {
-
-		x_last = x;
 
 		vec = A * x;
 
@@ -124,11 +123,49 @@ const double tolerance, const double tau){
 		norm = 0;
 
         for (int i = 0; i < N; ++i) {
-            norm += std::abs(x[i] - x_last[i]);
+            norm += std::abs(vec[i] - b[i]);
 		}
 
 	}
+
 	return x;
+}
+
+std::vector<double> SIMwCA(const CSR &A, const double lambda_min, const double lambda_max, const std::vector<double> &x_0, const std::vector<double> &b, 
+const double tolerance, const int n) {
+
+	std::vector<int> nums = Numbers(n);
+	std::vector<double> taus = TauFromCheb(n, lambda_min, lambda_max);
+
+	int N = A.GetN(); //Simple.
+
+	double norm = 0; 
+	
+	std::vector<double> x = x_0, vec(N);
+
+	for (int i = 0; i < pow(2, n); ++i) {
+
+		vec = A * x;
+
+		for (int k = 0; k < N; ++k) {
+			x[k] = x[k] - taus[nums[i]] * (vec[k] - b[k]);
+		}
+
+		norm = 0;
+
+        for (int i = 0; i < N; ++i) {
+            norm += std::abs(vec[i] - b[i]);
+		}
+
+	}
+
+	if (norm > tolerance) {
+		return SIMwCA(A, lambda_min, lambda_max, x, b, tolerance, n);
+	}
+	else {
+		return x;
+	}
+
 }
 
 #endif

@@ -9,18 +9,9 @@ private:
     std::vector<double> A;
     int M, N;
 public:
-    Matrix(const int m, const int n) {
-        std::vector<double> B(m * n);
-        A = B;
-        M = m;
-        N = n;
-
-    }
-    Matrix(const std::vector<double> &a, const int m, const int n) { //N - кол-во столбцов
-        A = a;
-        N = n;
-        M = m;
-    }
+    Matrix(const int m, const int n): A{std::vector<double>(m* n)}, M{m}, N{n} {}
+    Matrix(const std::vector<double> &a, const int m, const int n): A{a}, N{n}, M{m} {}
+    
     double operator ()(int i, int j) const {
         return A[i * N + j];
     }

@@ -1,4 +1,4 @@
-#include "Work/MethodForProblem3.hpp"
+#include "PROBLEMS/MethodForProblem3.hpp"
 
 void Problem_3() { 
 	std::ofstream fout;

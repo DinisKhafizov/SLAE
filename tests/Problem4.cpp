@@ -1,4 +1,4 @@
-#include "Work/MethodsForProblem4.hpp"
+#include "PROBLEMS/MethodsForProblem4.hpp"
 
 
 void Problem_4() {
@@ -16,7 +16,7 @@ void Problem_4() {
 	CSR A(a, cols, rows, Ncols);
 	res_Jac = JacobiMethod(A, x_0, b, tolerance);
 	res_Seid = GaussSeidelMethod(A, x_0, b, tolerance);
-	res_Simp = SimpleIterationMethod(A, x_0, b, tolerance, tau);
+	res_Simp = SimpleIterationMethod1(A, x_0, b, tolerance, tau);
 	for (int i = 0; i < size(res_Jac.first); ++i) {
 		fout_Jac << res_Jac.first[i] << ";" << res_Jac.second[i] << std::endl;
 	}

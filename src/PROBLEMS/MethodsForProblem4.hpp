@@ -13,7 +13,7 @@ Methods return not x, but pair of vectors: 1-st is vector of Number of iteration
 */
 	
 
-std::pair<std::vector<double>, std::vector<int>> JacobiMethod(CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance) {
+std::pair<std::vector<double>, std::vector<int>> JacobiMethod(CSR A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance) {
 
     int N = A.GetN(), y = 0; //shape of matrix
 
@@ -56,14 +56,6 @@ std::pair<std::vector<double>, std::vector<int>> JacobiMethod(CSR &A, const std:
 		r.resize(y);
 		r[y - 1] = norm;
     }
-
-	for (int i = 0; i < N; ++i) {
-		for(int k = A.GetRow()[i]; k < A.GetRow()[i + 1]; ++k) {
-			if (A.GetCol()[k] == i) {
-				A.GetVal()[k] = diag[i];
-			}
-		}
-	}//returning A its values
 
 	std::pair<std::vector<double>, std::vector<int>> l(r, num_iter);
 
@@ -126,7 +118,7 @@ std::pair<std::vector<double>, std::vector<int>> GaussSeidelMethod(CSR &A, const
     return l;
 }
 
-std::pair<std::vector<double>, std::vector<int>> SimpleIterationMethod(const CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance, const double tau){
+std::pair<std::vector<double>, std::vector<int>> SimpleIterationMethod1(const CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance, const double tau){
 
 	int N = A.GetN(), y = 0; //Simple.
 
