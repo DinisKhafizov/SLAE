@@ -5,7 +5,7 @@
 #include <vector>
 #include <cmath>
 
-std::vector<int> Numbers(int n) {
+std::vector<int> Numbers(const int n) {
     if (n == 1) {
         std::vector<int> a = {0, 1};
         return a;
@@ -28,15 +28,16 @@ std::vector<int> Numbers(int n) {
 }
 
 std::vector<double> TauFromCheb(const int n, const double lambda_min, const double lambda_max) {
-    std::vector<double> taus(n);
-    const double cos_const = cos(M_PI/n), sin_const = sin(M_PI/n), lam_plus = (lambda_max + lambda_min)/2, lam_minus = (lambda_max - lambda_min)/2;
-    double Sin = sin(M_PI/(2 * n));
-    taus[0] = cos(M_PI/(2 * n));
-    for(int i = 1; i < n; ++i) {
+    const int N = std::pow(2, n);
+    std::vector<double> taus(N);
+    const double cos_const = cos(M_PI/N), sin_const = sin(M_PI/N), lam_plus = (lambda_max + lambda_min)/2, lam_minus = (lambda_max - lambda_min)/2;
+    double Sin = sin(M_PI/(2 * N));
+    taus[0] = cos(M_PI/(2 * N));
+    for(int i = 1; i < N; ++i) {
         taus[i] = taus[i - 1] * cos_const - Sin * sin_const;
         Sin = Sin * cos_const + taus[i - 1] * sin_const;
     }
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < N; ++i) {
         taus[i] = 1 / (lam_plus + lam_minus * taus[i]);
     }
     return taus;

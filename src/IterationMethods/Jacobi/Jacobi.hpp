@@ -8,8 +8,8 @@
 
 std::vector<double> JM(CSR A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance) {
 
-    int N = A.GetN(); //shape of matrix
-    std::vector<double> x = x_0, diag(N), vec(N), x_last; // x and x_last for counting norm, vec for storage A*x, diag for storage diag els of A
+    const int N = size(x_0); //shape of matrix
+    std::vector<double> x = x_0, diag(N), x_last(N, 100); //, vec(N); x and x_last for counting norm, vec for storage A*x, diag for storage diag els of A
 
 	for (int i = 0; i < N; ++i) {
 		for(int k = A.GetRow()[i]; k < A.GetRow()[i + 1]; ++k) {
@@ -19,13 +19,14 @@ std::vector<double> JM(CSR A, const std::vector<double> &x_0, const std::vector<
 			}
 		}
 	}
-
     while (first_norm(x - x_last) > tolerance) {
 		x_last = x;
-        vec = A*x;
+        /*
         for (int i = 0; i < N; ++i) {
             x[i] = (b[i] - vec[i]) / diag[i]; //new x
         }
+        */
+        x = (b - A * x)/diag; //el-wise division
     }
 
     return x;

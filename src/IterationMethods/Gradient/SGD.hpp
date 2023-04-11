@@ -6,13 +6,12 @@
 #include "CSR/MatrixOnCSR.hpp"
 #include "Vect/VectorOperations.hpp"
 
-std::vector<double> SGD(const CSR &A, const std::vector<double> &b, const std::vector<double> &x_0, double tolerance) {
+std::vector<double> SGD(const CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, double tolerance) {
 	double tau;
-	std::vector<double> x = x_0, vec(size(b)), r(size(b));
+	std::vector<double> x = x_0, r(size(b), 100);
 
 	while(first_norm(r) > tolerance) {
-		vec = A * x;
-		r = vec - b;
+		r = A*x - b;
 		tau = (r * r) / (A * r * r);
 		x = x - tau * r;
 	}

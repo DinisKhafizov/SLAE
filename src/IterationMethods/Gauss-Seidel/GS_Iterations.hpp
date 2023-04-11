@@ -6,63 +6,35 @@
 #include"CSR/MatrixOnCSR.hpp"
 #include "Vect/VectorOperations.hpp"
 
+//Комменты:
+
+//11.04: улучшил итерации сверху вниз и наоборот. Лишнюю итерацию с прибавлением x[i] += x[i] * diag[i] убрал
+//посредством зануления диагональных элементов у матрицы А (у вектора values CSR матрицы). Других идей по оптимизации итераций пока нет.
+
 std::vector<double> TopDownIteration(CSR A, const std::vector<double> &diag, const std::vector<double> &b, std::vector<double> x) {
-
-    double Ux, Lx;
-    int N = size(x), u;
-
-    for (int k = 1; k < A.GetRow()[1]; ++k) {
-		Ux += A.GetVal()[k] *  x[A.GetCol()[k]];
-	}
-
-    x[0] = (b[0] - Ux) / diag[0];
-
-    for (int j = 1; j < N; ++j) {
-
-        Ux = 0; //sum U * x_i
-        Lx = 0; // sum L * x_(i+1)
-        u = 1;
-
-        for (int k = A.GetRow()[j]; k < A.GetRow()[j + 1] && A.GetCol()[k] < j; ++k) {
-            Lx += A.GetVal()[k] * x[A.GetCol()[k]];
-            u++; //counter of iterations (A - square matrix, so *num of counting Ux iterations*  = N - *number of counting Lx iterations*)
+    const int N = size(x);
+    int r;
+    for (int i = 0; i < N; ++i) {
+        x[i] = b[i];
+        r = A.GetRow()[i + 1];
+        for (int j = A.GetRow()[i]; j < r; ++j) {
+            x[i] -= A.GetVal()[j] * x[A.GetCol()[j]];
         }
-
-        for (int k = A.GetRow()[j] + u; k < A.GetRow()[j + 1]; ++k) { //so here I use counter u
-            Ux += A.GetVal()[k] * x[A.GetCol()[k]];
-        }
-
-        x[j] = (b[j] - Ux - Lx) / diag[j];
-
+        x[i] /= diag[i];
     }
     return x;
 }
 
 std::vector<double> DownUpIteration(CSR A, const std::vector<double> &diag, const std::vector<double> &b, std::vector<double> x) {
-    double Ux, Lx;
-    int N = size(x), u;
-    for (int k = A.GetRow()[N - 1]; k < A.GetRow()[N] - 1; ++k) {
-		Lx += A.GetVal()[k] * x[A.GetCol()[k]];
-	}
-    x.back() = (b[N - 1] - Lx) / diag[N - 1];
-
-    for (int j = N - 1; j > 0; --j) {
-
-        Ux = 0; //sum U * x_i
-        Lx = 0; // sum L * x_(i+1)
-        u = 1;
-
-        for (int k = A.GetRow()[j - 1]; k < A.GetRow()[j] && A.GetCol()[k] < (j - 1); ++k) {
-            Lx += A.GetVal()[k] * x[A.GetCol()[k]];
-            u++; //counter of iterations (A - square matrix, so *num of counting Ux iterations*  = N - *number of counting Lx iterations*)
+    const int N = size(x);
+    int r;
+    for (int i = N - 1; i >= 0; --i) {
+        x[i] = b[i];
+        r = A.GetRow()[i + 1];
+        for (int j = A.GetRow()[i]; j < r; ++j) {
+            x[i] -= A.GetVal()[j] * x[A.GetCol()[j]];
         }
-
-        for (int k = A.GetRow()[j - 1] + u; k < A.GetRow()[j]; ++k) { //so here I use counter u
-            Ux += A.GetVal()[k] * x[A.GetCol()[k]];
-        }
-
-        x[j - 1] = (b[j - 1] - Ux - Lx) / diag[j - 1];
-
+        x[i] /= diag[i];
     }
     return x;
 }

@@ -21,6 +21,7 @@ std::vector<double> operator-(const std::vector<double> &a, const std::vector<do
     return res;
 }
 
+
 /*
 Matrix operator*(const std::vector<double> &a, const std::vector<double> &b) {
     std::vector<double> res(size(a) * size(b));
@@ -64,6 +65,18 @@ std::vector<double> operator/(const std::vector<double> &a, double x) {
     std::vector<double> res(size(a));
     for (int i = 0; i < size(a); ++i) {
         res[i] = a[i] / x;
+    }
+    return res;
+}
+std::vector<double> operator/(const std::vector<double> &a, const std::vector<double> &b) {
+    const int n = size(a);
+    std::vector<double> res(n);
+    if (n != size(b)) {
+        std::cout << "Dimensions of vectors must be equal! ('vec1/vec2' - element-wise division)" << std::endl;
+        return res;
+    }
+    for (int i = 0; i < n; ++i) {
+        res[i] = a[i]/b[i];
     }
     return res;
 }
