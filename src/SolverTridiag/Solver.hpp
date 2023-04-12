@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include "Tridiag/Tridiag.hpp"
+#include "Matrixes/Tridiag/Tridiag.hpp"
 
 
 

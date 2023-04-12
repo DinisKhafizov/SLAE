@@ -1,6 +1,6 @@
 #include "Vect/VectorOperations.hpp"
 #include <gtest/gtest.h>
-#include "CSR/MatrixOnCSR.hpp"
+#include"Matrixes/CSR/MatrixOnCSR.hpp"
 
 TEST(mult, mult1) {
     std::vector<double> a = {3, 5, 1}, b = {2, 7, 1};

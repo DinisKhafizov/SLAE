@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include "CSR/MatrixOnCSR.hpp"
+#include"Matrixes/CSR/MatrixOnCSR.hpp"
 #include "Vect/VectorOperations.hpp"
 #include "Acceleration/Cheb_Accel.hpp"
 
@@ -15,12 +15,12 @@ const double lambda_max, const int n) {
 	int N = size(x_0); 
 	double norm = 0; 
 	std::vector<double> x = x_0;
-    std::vector<double> vec = A * x;
+    std::vector<double> r = A*x - b;
 
 	for (int i = 0; i < pow(2, n); ++i) {
-		x = x - taus[nums[i]] * (vec - b);
-        vec = A * x;
-		norm = first_norm(vec - b);
+		x = x - taus[nums[i]] * r;
+        r = A * x - b;
+		norm = first_norm(r);
 	}
 
 	if (norm > tolerance) {

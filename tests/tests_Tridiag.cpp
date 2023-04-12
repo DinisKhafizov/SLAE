@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "Tridiag/Tridiag.hpp"
 #include "SolverTridiag/Solver.hpp"
 
 /*

@@ -3,7 +3,7 @@
 
 #include<iostream>
 #include"Vect/VectorOperations.hpp"
-#include"CSR/MatrixOnCSR.hpp"
+#include"Matrixes/CSR/MatrixOnCSR.hpp"
 #include "Vect/VectorOperations.hpp"
 
 std::vector<double> SOR(CSR A, const std::vector<double> x_0, std::vector<double> &b, const double tolerance, const double omega) {
