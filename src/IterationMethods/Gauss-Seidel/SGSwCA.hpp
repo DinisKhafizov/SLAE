@@ -28,7 +28,7 @@ std::vector<double> SGSMwCA(CSR A, const std::vector<double> &x_0, const std::ve
     x = DownUpIteration(A, diag, b, x);
     r = A * x - b;
 
-    while (first_norm(r) > tolerance){  
+    while (first_norm(x - x_last) > tolerance){  
         x_last2 = x_last;
         x_last = x;
         x = TopDownIteration(A, diag, b, x);

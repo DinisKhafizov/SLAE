@@ -37,6 +37,15 @@ Matrix operator*(const std::vector<double> &a, const std::vector<double> &b) {
 }
 */
 
+std::vector<double> elWiseMult(const std::vector<double> &a, const std::vector<double> &b) {
+    const int n = size(a);
+    std::vector<double> res(n);
+    for (int i = 0; i < n; ++i) {
+        res[i] = a[i] * b[i];
+    }
+    return res;
+}
+
 double operator*(const std::vector<double> &a, const std::vector<double> &b) {
     double res=0;
     for (int i = 0; i < size(a); ++i){
@@ -99,6 +108,16 @@ bool vect_equality(const std::vector<double> &a, std::vector<double> &b) {
         }
     }
     return true;
+}
+
+void head(std::vector<double> x, const int num = 10, int cols = 0) {
+    for (int i = 0; i < num; ++i) {
+        std::cout << "| ";
+        for (int j = 0; j < cols; ++j){
+            std::cout << x[i*cols + j] << " | ";
+        }
+        std::cout << std::endl << "--------" << std::endl;
+    }
 }
 
 
