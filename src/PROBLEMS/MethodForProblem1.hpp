@@ -50,16 +50,19 @@ const double lambda_max, const int n, std::vector<double> &res, double counter =
 
 	std::vector<int> nums = Numbers(n);
 	std::vector<double> taus = TauFromCheb(n, lambda_min, lambda_max);
-	int N = size(x_0);  
+	const int N = size(x_0), it = pow(2, n);
+    int i = 0;  
 	std::vector<double> x = x_0;
     std::vector<double> r = A * x - b;
-    double norm;// = first_norm(r);
+    double norm = first_norm(r);// = first_norm(r);
     //std::vector<double> res = {counter, log(norm)};
 
-	for (int i = 0; i < pow(2, n); ++i) {
-		x = x - taus[nums[i]] * r;
+	//for (int i = 0; i < pow(2, n); ++i) {
+    while ((i < it) && (norm > tolerance)) {
+		x = x - taus[nums[i]] * r;      
         r = A * x - b;
 		norm = first_norm(r);
+        i++;
         counter += 1;
         res.push_back(counter);
         res.push_back(log(norm));
@@ -73,6 +76,39 @@ const double lambda_max, const int n, std::vector<double> &res, double counter =
 	}
 
 }
+
+std::vector<double> SIMwCA_next(const CSR &A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance, const double lambda_min, 
+const double lambda_max, const int n, double counter = 0) {
+
+	std::vector<int> nums = Numbers(n);
+	std::vector<double> taus = TauFromCheb(n, lambda_min, lambda_max);
+	const int N = size(x_0), it = pow(2, n);
+    int i = 0;  
+	std::vector<double> x = x_0;
+    std::vector<double> r = A * x - b, res;
+    double norm = first_norm(r);// = first_norm(r);
+    //std::vector<double> res = {counter, log(norm)};
+
+	//for (int i = 0; i < pow(2, n); ++i) {
+    while ((i < it) && (norm > tolerance)) {
+		x = x - taus[nums[i]] * r;      
+        r = A * x - b;
+		norm = first_norm(r);
+        i++;
+        counter += 1;
+	}
+
+	if (norm > tolerance) {
+		return SIMwCA_next(A, x, b, tolerance, lambda_min, lambda_max, n, counter);
+	}
+	else {
+        res.push_back(counter);
+        res.push_back(lambda_max);
+		return res;
+	}
+
+}
+
 
 
 std::vector<double> SGSM(CSR A, const std::vector<double> &x_0, const std::vector<double> &b, const double tolerance) {

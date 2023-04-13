@@ -40,7 +40,9 @@ int main() {
 
 
     CSR A(vals, cols, rows, N);
-    std::vector<double> res_si, res_si_opt, res_cheb, res_sym, res_sym_cheb;
+    std::vector<double> res_si, res_si_opt, res_cheb, res_sym, res_sym_cheb, res1;
+    std::ofstream fout1;
+    fout1.open("Task11.txt");
     double counter = 0;
     std::vector<double> res = {counter, log(first_norm(A * x_0 - b))};  
     std::pair<double,double> lam = lambda(a, b2/2, L);
@@ -49,5 +51,8 @@ int main() {
     res_cheb = SIMwCA(A, x_0, b, tolerance, lam.first, lam.second, 3, res); Write(res_cheb, "SIM_W_CHEB.txt");
     res_sym = SGSM(A, x_0, b, tolerance); Write(res_sym, "SGS.txt");
     res_sym_cheb = SGSMwCA(A, x_0, b, tolerance, 0.5); Write(res_sym_cheb, "SGS_W_CHEB.txt");
-
+    for (int i = 0; i < 3000; ++i) {
+        res1 = SIMwCA_next(A, x_0, b, tolerance, lam.first, lam.second + i, 3);
+        fout1 << res1[0] << ";" << res1[1] << "\n";
+    }
 }

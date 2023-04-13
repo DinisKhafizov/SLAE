@@ -12,15 +12,18 @@ const double lambda_max, const int n) {
 
 	std::vector<int> nums = Numbers(n);
 	std::vector<double> taus = TauFromCheb(n, lambda_min, lambda_max);
-	int N = size(x_0); 
+	const int N = size(x_0), it = pow(2, n);
+	int i = 0; 
 	double norm = 0; 
 	std::vector<double> x = x_0;
     std::vector<double> r = A*x - b;
 
-	for (int i = 0; i < pow(2, n); ++i) {
+	//for (int i = 0; i < pow(2, n); ++i) {
+	while (i < it || norm > tolerance) {
 		x = x - taus[nums[i]] * r;
         r = A * x - b;
 		norm = first_norm(r);
+		i++;
 	}
 
 	if (norm > tolerance) {
