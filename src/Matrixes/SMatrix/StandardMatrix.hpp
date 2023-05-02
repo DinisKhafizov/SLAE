@@ -11,6 +11,10 @@ private:
 public:
     Matrix(const int m, const int n): A{std::vector<double>(m* n)}, M{m}, N{n} {}
     Matrix(const std::vector<double> &a, const int m, const int n): A{a}, N{n}, M{m} {}
+    Matrix(){
+        N = 0;
+        M = 0;
+    }
     
     double operator ()(int i, int j) const {
         return A[i * N + j];
@@ -18,6 +22,19 @@ public:
     double &operator ()(int i, int j) {
         return A[i * N + j];
     }
+
+    std::vector<double> operator*(const std::vector<double> &x) const {
+        std::vector<double> res(M);
+        int k;
+        for (size_t i = 0; i < M; ++i) {
+            k = i * N;
+            for (size_t j = 0; j < N; ++j) {
+                res[i] += A[k + j] * x[j];
+            }
+        }
+        return res;
+    }
+
     std::vector<double> GetCol_WOut_Els(int j, int el) const	{
 		std::vector<double> vec(M - el);
 		for (int i = 0 + el; i < M; ++i){
@@ -34,20 +51,63 @@ public:
 		}
 		return vec;
     }
+
+    std::vector<double> getRow(const int i) {
+        std::vector<double> vec(N);
+        const int k = i * N;
+        for (int j = 0; j < N; ++j) {
+            vec[j] = A[k + j];
+        }
+        return vec;
+    }
+
+    std::vector<double> getCol(const int j) {
+        std::vector<double> vec(M);
+        const int k = j * N;
+        for (int i = 0; i < M; ++i) {
+            vec[i] = A[k + i];
+        }
+        return vec;
+    }
+
     std::vector<double> GetMinor(int k) const {
         std::vector<double> vec;
         vec.reserve((N - k) * (N - k));
         for (int i = 0; i < (N - i) * (N - i); ++i) {
            // vec[i] = A[]
         }
+    }   
+
+    void transpose() {
+        std::vector<double> res(M * N);
+        int k;
+        for (size_t i = 0; i < N; ++i) {
+            k = i * M;
+            for (size_t j = 0; j < M; ++j) {
+                res[j + k] = A[i + j*N];
+            }
+        }
+        A = res;
+        k = N;
+        N = M;
+        M = k;
     }
 
     void SetStringOnEnd(const std::vector<double> &newstr) {
-        A.resize(M * N + N);
-        for (int i = 0; i < N; ++i) {
-            A[M * N + i] = newstr[i];
+        const int n = size(newstr), m = size(A);
+        A.resize(m + n);
+        for (int i = 0; i < n; ++i) {
+            A[m + i] = newstr[i];
         }
-        M += 1;
+        if (M == 0) {
+            M = 1;
+        }
+        else {
+            M += 1;
+        }
+        if (N == 0) {
+            N = n;
+        }
     }
 
     int GetN() {
@@ -56,6 +116,20 @@ public:
 
     int GetM() {
         return(M);
+    }
+
+    std::vector<double> &get_vals() {
+        return A;
+    }
+
+    void show() {
+        for (int i = 0; i < M; ++i) {
+            for (int j = 0; j < N; ++j) {
+                std::cout << A[i*N + j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
     }
 };
 

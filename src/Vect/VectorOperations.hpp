@@ -4,10 +4,30 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include "Matrixes/CSR/MatrixOnCSR.hpp"
+
+
+/*
+Three sections:
+1) Arithmetic operations
+2) Norms counting
+3) Specific operations with vector
+
+*/
+
+// Arithmetic: '+', '-', '*', '/', '='
 
 std::vector<double> operator+(const std::vector<double> &a, const std::vector<double> &b) {
     std::vector<double> res(size(a));
-    for (int i =0; i < size(a); ++i){
+    for (int i = 0, end = size(a); i < end; ++i){
+        res[i] = a[i] + b[i];
+    }
+    return res;
+}
+
+std::vector<double> operator+=(const std::vector<double> &a, const std::vector<double> &b) {
+    std::vector<double> res(size(a));
+    for (int i = 0, end = size(a); i < end; ++i){
         res[i] = a[i] + b[i];
     }
     return res;
@@ -15,40 +35,23 @@ std::vector<double> operator+(const std::vector<double> &a, const std::vector<do
 
 std::vector<double> operator-(const std::vector<double> &a, const std::vector<double> &b) {
     std::vector<double> res(size(a));
-    for (int i =0; i < size(a); ++i){
+    for (int i = 0, end = size(a); i < end; ++i){
         res[i] = a[i] - b[i];
     }
     return res;
 }
 
-
-/*
-Matrix operator*(const std::vector<double> &a, const std::vector<double> &b) {
-    std::vector<double> res(size(a) * size(b));
-    int k, sB = size(b), sA = size(a);
-    for (int i = 0; i < size(a); ++i){
-        k = i * i * sB;
-        for (int j = 0; i < size(b); ++j){
-            res[k + j] = a[k] * b[j];
-        }
-    }
-    Matrix A(res, sA, sB);
-    return A;
-}
-*/
-
-std::vector<double> elWiseMult(const std::vector<double> &a, const std::vector<double> &b) {
-    const int n = size(a);
-    std::vector<double> res(n);
-    for (int i = 0; i < n; ++i) {
-        res[i] = a[i] * b[i];
+std::vector<double> operator-=(const std::vector<double> &a, const std::vector<double> &b) {
+    std::vector<double> res(size(a));
+    for (int i = 0, end = size(a); i < end; ++i){
+        res[i] = a[i] - b[i];
     }
     return res;
 }
 
 double operator*(const std::vector<double> &a, const std::vector<double> &b) {
     double res=0;
-    for (int i = 0; i < size(a); ++i){
+    for (int i = 0, end = size(a); i < end; ++i){
         res += a[i] * b[i];
     }
     return res;
@@ -56,7 +59,7 @@ double operator*(const std::vector<double> &a, const std::vector<double> &b) {
 
 std::vector<double> operator*(double x, const std::vector<double> &a) {
     std::vector<double> res(size(a));
-    for (int i = 0; i < size(a); ++i) {
+    for (int i = 0, end = size(a); i < end; ++i) {
         res[i] = a[i] * x;
     }
     return res;
@@ -64,7 +67,7 @@ std::vector<double> operator*(double x, const std::vector<double> &a) {
 
 std::vector<double> operator*(const std::vector<double> &a, double x) {
     std::vector<double> res(size(a));
-    for (int i = 0; i < size(a); ++i) {
+    for (int i = 0, end = size(a); i < end; ++i) {
         res[i] = a[i] * x;
     }
     return res;
@@ -72,7 +75,7 @@ std::vector<double> operator*(const std::vector<double> &a, double x) {
 
 std::vector<double> operator/(const std::vector<double> &a, double x) {
     std::vector<double> res(size(a));
-    for (int i = 0; i < size(a); ++i) {
+    for (int i = 0, end = size(a); i < end; ++i) {
         res[i] = a[i] / x;
     }
     return res;
@@ -90,19 +93,19 @@ std::vector<double> operator/(const std::vector<double> &a, const std::vector<do
     return res;
 }
 
-double first_norm(const std::vector<double> &x) {
-    double Norm = 0;
-    for (int i = 0; i < size(x); ++i) {
-        Norm += std::abs(x[i]);
+std::vector<double> operator/=(const std::vector<double> &x, const double a) {
+    std::vector<double> res(size(x));
+    for (int i = 0, end = size(x); i < end; ++i) {
+        res[i] = x[i]/a;
     }
-    return Norm;
+    return res;
 }
 
-bool vect_equality(const std::vector<double> &a, std::vector<double> &b) {
+bool operator==(const std::vector<double> &a, std::vector<double> &b) {
     if (size(a) != size(b)) {
         return false;
     }
-    for (int i = 0; i < size(a); ++i) {
+    for (int i = 0, end=size(a); i < end; ++i) {
         if (a[i] != b[i]) {
             return false;
         }
@@ -110,7 +113,36 @@ bool vect_equality(const std::vector<double> &a, std::vector<double> &b) {
     return true;
 }
 
-void head(std::vector<double> x, const int num = 10, int cols = 0) {
+// norms: first, second
+
+double first_norm(const std::vector<double> &x) {
+    double Norm = 0;
+    for (int i = 0, end = size(x); i < end; ++i) {
+        Norm += std::abs(x[i]);
+    }
+    return Norm;
+}
+
+double second_norm(const std::vector<double> &x) {
+    return sqrt(x * x);
+}
+
+double energetic_norm(const std::vector<double> &x, const CSR &A) {
+    return sqrt(x * (A * x));
+}
+
+//specific
+
+std::vector<double> elWiseMult(const std::vector<double> &a, const std::vector<double> &b) { //vect1 * vect2 == vect3, where vect3(i) == vect1(i) * vect2(i)
+    const int n = size(a);
+    std::vector<double> res(n);
+    for (int i = 0; i < n; ++i) { 
+        res[i] = a[i] * b[i];
+    }
+    return res;
+}
+
+void head(std::vector<double> x, const int num = 10, int cols = 0) {  // convinient derivation 
     for (int i = 0; i < num; ++i) {
         std::cout << "| ";
         for (int j = 0; j < cols; ++j){
@@ -121,54 +153,4 @@ void head(std::vector<double> x, const int num = 10, int cols = 0) {
 }
 
 
-/*
-std::vector<double> addition(const std::vector<double> &a,const std::vector<double> &b) {
-    std::vector<double> res(size(a));
-    for (int i = 0; i < size(a); ++i){
-        res[i] = a[i] + b[i];
-    }
-    return res;
-}
-
-std::vector<double> difference(const std::vector<double> &a,const std::vector<double> &b) {
-    std::vector<double> res(size(a));
-    for (int i = 0; i < size(a); ++i){
-        res[i] = a[i] - b[i];
-    }
-    return res;
-}
-
-double mult(const std::vector<double> &vect_str, const std::vector<double> &vect_col) {
-    double res = 0;
-    for (int i = 0; i < size(vect_col); ++i) {
-        res += vect_str[i] * vect_col[i];
-    }
-    return res;
-}
-
-std::vector<double> mult(const std::vector<double> &vect, double x) {
-    std::vector<double> res(size(vect));
-    for (int i = 0; i < size(vect); ++i) {
-        res[i] = vect[i] * x;
-    }
-    return res;
-}
-std::vector<double> mult(double x, const std::vector<double> &vect) {
-    std::vector<double> res(size(vect));
-    for (int i = 0; i < size(vect); ++i) {
-        res[i] = vect[i] * x;
-    }
-    return res;
-}
-
-std::vector<double> div(const std::vector<double> &vect, double x) {
-    std::vector<double> res(size(vect));
-    for (int i = 0; i < size(vect); ++i) {
-        res[i] = vect[i] / x;
-    }
-    return res;
-}
-
-
-*/
 #endif
