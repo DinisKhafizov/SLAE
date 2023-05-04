@@ -46,13 +46,16 @@ class Hessenberg {
             double n;
             std::vector<double> v = V.getCol(N_now);
             std::vector<double> nulls(H.GetN());
-
             for (int j = 0; j < i; ++j) {
                 H.SetStringOnEnd(nulls);
             }
             H.transpose();
             V.transpose();
             std::vector<double> h(H.GetN());
+            if (size(h) == 1) {
+                h.resize(2);
+                H.GetN() = 2;
+            }
             for (size_t j = N_now; j < i_end; ++j) {
                 v = A * v;
                 for (size_t k = 0, end = j; k < end; ++k) {
@@ -152,8 +155,53 @@ class Hessenberg {
 
 };
 
-std::vector<double> GMRES(const CSR &A, const std::vector<double> &b, const std::vector<double> &x_0, const double tolerance, const int iters) {
 
+std::vector<double> GMRES(const CSR &A, const std::vector<double> &b, const std::vector<double> &x_0, const double tolerance, int iters) {
+    std::vector<double> r_0 = A * x_0 - b, x(size(x_0)), q = {1, 1}, y;
+    double q_last = 1;
+    Hessenberg heis(A, r_0, 0);
+    Matrix V1, H1;
+    for (size_t i = 0; i < iters; ++i) {
+        if (q_last < tolerance) {
+            return x;
+        }
+        heis.newIter(A);
+        q = heis.givens_last_iter(q);
+        q_last = q.back();
+        q.pop_back();
+        V1 = heis.get_V_exc_lastcol();
+        H1 = heis.get_H();
+        H1.deleteStringOnEnd();
+        y = GaussReverse(H1, q);
+        x = x_0 - V1 * y;
+    }
+    return x;
+}
+
+std::vector<double> GMRES(const CSR &A, const std::vector<double> &b, const std::vector<double> &x_0, const double tolerance) {
+    std::vector<double> r_0 = A * x_0 - b, x(size(x_0)), q = {1, 1}, y;
+    double norm_r0 = second_norm(r_0);
+    const int N = A.GetN(); 
+    double q_last = 1;
+    Hessenberg heis(A, r_0, 0);
+    Matrix V1, H1;
+    for (size_t i = 0; i < N - 1; ++i) {
+        if (std::abs(q_last * norm_r0) < tolerance) {
+            return x;
+        }
+        heis.newIter(A);
+        q = heis.givens_last_iter(q);
+        q_last = q.back();
+        q.pop_back();
+        V1 = heis.get_V_exc_lastcol();
+        H1 = heis.get_H();
+        H1.deleteStringOnEnd();
+        y = GaussReverse(H1, q * norm_r0);
+        x = x_0 - V1 * y;
+        q.resize(2 + i);
+        q.back() = q_last;
+    }
+    return GMRES(A, b, x, tolerance);
 }
 
 

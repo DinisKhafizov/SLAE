@@ -13,7 +13,7 @@ tests_CSR.cpp
 #test_Dense.cpp
 #tests_Tridiag.cpp
 #tests_vect_op.cpp 
-test_Hessenberg.cpp
+test_GMRES.cpp
 #test_cheb.cpp)
 )
 

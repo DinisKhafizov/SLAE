@@ -66,13 +66,6 @@ public:
         return vec;
     }
 
-    std::vector<double> GetMinor(int k) const {
-        std::vector<double> vec;
-        vec.reserve((N - k) * (N - k));
-        for (int i = 0; i < (N - i) * (N - i); ++i) {
-           // vec[i] = A[]
-        }
-    }   
 
     void transpose() {
         std::vector<double> res(M * N);
@@ -127,11 +120,11 @@ public:
         M -= 1;
     }
 
-    int GetN() {
+    int &GetN() {
         return(N);
     }
 
-    int GetM() {
+    int &GetM() {
         return(M);
     }
 
