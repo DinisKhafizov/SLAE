@@ -11,11 +11,8 @@ private:
 public:
     Matrix(const int m, const int n): A{std::vector<double>(m* n)}, M{m}, N{n} {}
     Matrix(const std::vector<double> &a, const int m, const int n): A{a}, N{n}, M{m} {}
-    Matrix(){
-        N = 0;
-        M = 0;
-    }
-    
+    Matrix(): N{0}, M{0} {}
+
     double operator ()(int i, int j) const {
         return A[i * N + j];
     }
@@ -63,9 +60,8 @@ public:
 
     std::vector<double> getCol(const int j) {
         std::vector<double> vec(M);
-        const int k = j * N;
         for (int i = 0; i < M; ++i) {
-            vec[i] = A[k + i];
+            vec[i] = A[j - 1 + i*N];
         }
         return vec;
     }
@@ -93,6 +89,20 @@ public:
         M = k;
     }
 
+
+    Matrix transpose(const int what){
+        std::vector<double> res(M * N);
+        int k;
+        for (size_t i = 0; i < N; ++i) {
+            k = i * M;
+            for (size_t j = 0; j < M; ++j) {
+                res[j + k] = A[i + j*N];
+            }
+        }
+        Matrix B(res, N, M);
+        return B;
+    }
+
     void SetStringOnEnd(const std::vector<double> &newstr) {
         const int n = size(newstr), m = size(A);
         A.resize(m + n);
@@ -108,6 +118,13 @@ public:
         if (N == 0) {
             N = n;
         }
+    }
+
+    void deleteStringOnEnd() {
+        for (size_t i = 0; i < N; ++i) {
+            A.pop_back();
+        }
+        M -= 1;
     }
 
     int GetN() {

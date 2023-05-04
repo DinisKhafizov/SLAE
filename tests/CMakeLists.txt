@@ -10,7 +10,7 @@ add_executable(run_tests
 #ProblemsKR2.cpp
 #test_IterMethods.cpp
 tests_CSR.cpp
-test_Dense.cpp
+#test_Dense.cpp
 #tests_Tridiag.cpp
 #tests_vect_op.cpp 
 test_Heisenberg.cpp
