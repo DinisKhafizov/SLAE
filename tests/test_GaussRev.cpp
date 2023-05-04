@@ -1,6 +1,8 @@
 #include "Gauss/GaussReverse.hpp"
 #include <gtest/gtest.h>
 
+
+
 TEST(gauss, gauss_rev1) {
     std::vector<double> A = {1, 2, 7, 0, 4, 3, 0, 0, 10}, b = {3, 2, 1};
     std::vector<double> x;
@@ -18,4 +20,23 @@ TEST(gauss, gauss_rev2) {
     for (int i = 0; i < 4; ++i) {
         std::cout << x[i] << std::endl;
     }    
+}
+
+TEST(gauss, gauss_rev3) {
+    std::vector<double> A = {3}, b = {5};
+    std::vector<double> x;
+    Matrix B(A, 1, 1);
+    x = GaussReverse(B, b);
+    for (size_t i = 0, end = size(x); i < end; ++i) {
+        std::cout << x[i] << std::endl;
+    }
+}
+TEST(gauss, gauss_rev4) {
+    std::vector<double> A = {15, 13, 123, 1, 2, 0, 7, 113, 94, -24, 0, 0, 236, 85, 100, 0, 0, 0, -21, -123, 0, 0, 0, 0, 923};
+    std::vector<double> b = {213, 23, 623, 531, 123};
+    Matrix B(A, 5, 5);
+    std::vector<double> x = GaussReverse(B, b);
+    for (size_t i = 0, end = size(x); i < end; ++i) {
+        std::cout << x[i] << std::endl;
+    }
 }
