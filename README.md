@@ -7,7 +7,9 @@ Folder containing ".cpp" files - tests of implemented methods. For this I use go
 ## CURRENT WORK
 GMRES:  
 Hessenberg Matrix, Givens rotations, Gauss reverse algorythm, GMRES algorythm  
+  
 Second test:  
 Graphics  
+  
 Iteration methods:  
 GS, SGS, iterations for them.
