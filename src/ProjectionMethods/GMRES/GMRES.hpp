@@ -13,12 +13,12 @@ std::pair<Matrix, Matrix> Arnoldi(const CSR &A, const std::vector<double> &r_0) 
 }
 */
 
-class Heisenberg {
+class Hessenberg {
     private:
         Matrix H, V; //while filling H and V we get them transposed!
         std::vector<double> rot; // begins with cos
     public:
-        Heisenberg(const CSR &A, const std::vector<double> &r_0, const int i_end = 1) {
+        Hessenberg(const CSR &A, const std::vector<double> &r_0, const int i_end = 1) {
             std::vector<double> v = r_0/second_norm(r_0), h(i_end + 1);
             const int N = A.GetN();
             double n;
@@ -154,32 +154,6 @@ class Heisenberg {
 
 std::vector<double> GMRES(const CSR &A, const std::vector<double> &b, const std::vector<double> &x_0, const double tolerance, const int iters) {
 
-    std::vector<double> r_0 = A * x_0 - b;
-    double q_t;
-    Heisenberg heis(A, r_0);
-    std::vector<double> r = r_0, q = {1, 1}, x(size(r_0));
-    Matrix R, V;
-    int i = 0;
-    while (i < iters) {
-        q = heis.givens_last_iter(q);
-        q_t = q.back();
-        q.pop_back();
-        R = heis.get_H();
-        R.deleteStringOnEnd();
-        V = heis.get_V_exc_lastcol();
-        x = x_0 + V * GaussReverse(R, q);
-        q.resize(size(q) + 1);
-        q.back() = q_t;
-        heis.newIter(A);
-        if (std::abs(q[i + 1]) <= tolerance) {
-            return x;
-        }
-        ++i;
-    }
-    if (std::abs(q[i]) > tolerance) {
-        return GMRES(A, b, x, tolerance, iters);
-    }
-    return x;
 }
 
 
