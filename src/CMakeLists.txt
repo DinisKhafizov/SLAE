@@ -1,4 +1,4 @@
-file(GLOB_RECURSE LIB_SOURCES "*.hpp")
+file(GLOB_RECURSE LIB_SOURCES "*.hpp" "*.cpp")
 add_library(SLAE_methods INTERFACE)
 target_sources(SLAE_methods INTERFACE ${LIB_SOURCES})
 target_include_directories(SLAE_methods INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
