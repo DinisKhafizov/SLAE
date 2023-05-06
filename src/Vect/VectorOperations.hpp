@@ -5,6 +5,7 @@
 #include <vector>
 #include <cmath>
 #include "Matrixes/CSR/MatrixOnCSR.hpp"
+#include "Matrixes/SMatrix/StandardMatrix.hpp"
 
 
 /*
@@ -45,6 +46,7 @@ double energetic_norm(const std::vector<double> &x, const CSR &A);
 //specific
 
 std::vector<double> elWise_Mult(const std::vector<double> &a, const std::vector<double> &b);
-
+Matrix dot(const std::vector<double> &a, const std::vector<double> &b);
+Matrix dot_self(const std::vector<double> &a);
 
 #endif

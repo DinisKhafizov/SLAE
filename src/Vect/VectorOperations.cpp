@@ -138,3 +138,37 @@ std::vector<double> elWise_Mult(const std::vector<double> &a, const std::vector<
     }
     return res;
 }
+
+Matrix dot(const std::vector<double> &a, const std::vector<double> &b) {
+    const int N = size(b), M = size(a);
+    size_t k;
+    std::vector<double> res(M * N);
+    for (size_t i = 0; i < M; ++i) {
+        k = i * N;
+        for (size_t j = 0; j < N; ++j) {
+            res[k + j] = a[i] * b[j];
+        }
+    }
+    Matrix RES(res, M, N);
+    return RES;
+}
+
+Matrix dot_self(const std::vector<double> &a) {
+    const size_t N = size(a);
+    size_t k;
+    std::vector<double> res(N * N);
+    /*
+    for(size_t i = 0; i < N; ++i) {
+        res[i*i] = a[i] * a[i];
+    }
+    */
+    for (size_t i = 0; i < N; ++i) {
+        k = i * N;
+        for (size_t j = i; j < N; ++j){
+            res[k + j] = a[i] * a[j];
+            res[j * N + i] = res[k + j];
+        }
+    }
+    Matrix RES(res, N, N);
+    return RES;
+}

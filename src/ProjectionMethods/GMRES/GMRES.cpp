@@ -28,7 +28,7 @@ void Hessenberg::newIter(const CSR &A, const int i) { //If you getting another i
     const int N_now = V.GetN(), N = A.GetN();
     const int i_end = N_now + i;
     double n;
-    std::vector<double> v = V.getCol(N_now);
+    std::vector<double> v = V.getCol(N_now - 1);
     std::vector<double> nulls(H.GetN());
     for (int j = 0; j < i; ++j) {
         H.SetStringOnEnd(nulls);
@@ -139,49 +139,43 @@ Matrix Hessenberg::get_V_exc_lastcol() {
 
 
 std::vector<double> GMRES(const CSR &A, const std::vector<double> &b, const std::vector<double> &x_0, const double tolerance, int iters) {
-    std::vector<double> r_0 = A * x_0 - b, x(size(x_0)), q = {1, 1}, y;
-    double q_last = 1;
-    Hessenberg heis(A, r_0, 0);
-    Matrix V1, H1;
+
+    std::vector<double> r_0 = A * x_0 - b, x(size(x_0)), q, y;
+    Hessenberg heis(A, r_0, iters);
+    std::vector<double> q_all = heis.givens();
+    double q_last = 1, norm_r0 = second_norm(r_0);
     for (size_t i = 0; i < iters; ++i) {
-        if (q_last < tolerance) {
+        if (std::abs(q_last * norm_r0) < tolerance) {
             return x;
         }
-        heis.newIter(A);
-        q = heis.givens_last_iter(q);
-        q_last = q.back();
-        q.pop_back();
-        V1 = heis.get_V_exc_lastcol();
-        H1 = heis.get_H();
-        H1.deleteStringOnEnd();
-        y = GaussReverse(H1, q);
-        x = x_0 - V1 * y;
+        q_last = q_all[i + 1];
+        q.resize(i + 1);
+        q[i] = q_all[i];
+        x = x_0 - heis.get_V().partly_dot(GaussReverse(heis.get_H(), q * norm_r0, i + 1));
     }
+    
     return x;
 }
 
 std::vector<double> GMRES(const CSR &A, const std::vector<double> &b, const std::vector<double> &x_0, const double tolerance) {
-    std::vector<double> r_0 = A * x_0 - b, x(size(x_0)), q = {1, 1}, y;
-    double norm_r0 = second_norm(r_0);
-    const int N = A.GetN(); 
-    double q_last = 1;
-    Hessenberg heis(A, r_0, 0);
-    Matrix V1, H1;
-    for (size_t i = 0; i < N - 1; ++i) {
+    
+    const int N = A.GetN();
+    std::vector<double> r_0 = A * x_0 - b, x(size(x_0)), q, y;
+    Hessenberg heis(A, r_0, N);
+    std::vector<double> q_all = heis.givens();
+    double q_last = 1, norm_r0 = second_norm(r_0);
+    for (size_t i = 0; i < N; ++i) {
         if (std::abs(q_last * norm_r0) < tolerance) {
             return x;
         }
-        heis.newIter(A);
-        q = heis.givens_last_iter(q);
-        q_last = q.back();
-        q.pop_back();
-        V1 = heis.get_V_exc_lastcol();
-        H1 = heis.get_H();
-        H1.deleteStringOnEnd();
-        y = GaussReverse(H1, q * norm_r0);
-        x = x_0 - V1 * y;
-        q.resize(2 + i);
-        q.back() = q_last;
+        q_last = q_all[i + 1];
+        q.resize(i + 1);
+        q[i] = q_all[i];
+        //y = GaussReverse(heis.get_H(), q, i + 1);
+        x = x_0 - heis.get_V().partly_dot(GaussReverse(heis.get_H(), q * norm_r0, i + 1));
     }
-    return GMRES(A, b, x, tolerance);
+    if (std::abs(q_last * norm_r0) < tolerance) {
+        return x;
+    }
+        return GMRES(A, b, x, tolerance);
 }

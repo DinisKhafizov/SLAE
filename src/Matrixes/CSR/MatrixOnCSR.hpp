@@ -32,5 +32,4 @@ public:
 	std::vector<int> GetCol()  const;
 	
 };
-
 #endif //CSRMATRIX

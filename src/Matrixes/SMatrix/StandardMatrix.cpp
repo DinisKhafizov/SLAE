@@ -22,6 +22,20 @@ std::vector<double> Matrix::operator*(const std::vector<double> &x) const {
     return res;
 }
 
+std::vector<double> Matrix::partly_dot(const std::vector<double> &x) {
+    const int N_x = size(x);
+    int k;
+    std::vector<double> res(M);
+    for (size_t i = 0; i < M; ++i) {
+        k = i * N;
+        for (size_t j = 0; j < N_x; ++j) {
+            res[i] += A[k + j] * x[j]; 
+        }
+    }
+    return res;
+
+}
+
 std::vector<double> Matrix::GetCol_WOut_Els(int j, int el) const	{
     std::vector<double> vec(M - el);
     for (int i = 0 + el; i < M; ++i){
@@ -39,6 +53,7 @@ std::vector<double> Matrix::GetStr_WOut_Els(int i, int el) const	{
     return vec;
 }
 
+
 std::vector<double> Matrix::getRow(const int i) {
     std::vector<double> vec(N);
     const int k = i * N;
@@ -48,10 +63,26 @@ std::vector<double> Matrix::getRow(const int i) {
     return vec;
 }
 
-std::vector<double> Matrix::getCol(const int j) {
+std::vector<double> Matrix::getCol(const int j)  {
     std::vector<double> vec(M);
-    for (int i = 0; i < M; ++i) {
-        vec[i] = A[j - 1 + i*N];
+    for (size_t i = 0; i < M; ++i) {
+        vec[i] = A[j + i*N];
+    }
+    return vec;
+}
+std::vector<double> Matrix::getRow(const int i) const {
+    std::vector<double> vec(N);
+    const int k = i * N;
+    for (int j = 0; j < N; ++j) {
+        vec[j] = A[k + j];
+    }
+    return vec;
+}
+
+std::vector<double> Matrix::getCol(const int j) const {
+    std::vector<double> vec(M);
+    for (size_t i = 0; i < M; ++i) {
+        vec[i] = A[j + i*N];
     }
     return vec;
 }
@@ -117,8 +148,18 @@ int &Matrix::GetN() {
 int &Matrix::GetM() {
     return(M);
 }
+int Matrix::GetN() const {
+    return(N);
+}
+
+int Matrix::GetM() const{
+    return(M);
+}
 
 std::vector<double> &Matrix::get_vals() {
+    return A;
+}
+std::vector<double> Matrix::get_vals() const {
     return A;
 }
 
