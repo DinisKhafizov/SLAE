@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+
 class Matrix {
 private:
     std::vector<double> A;
@@ -15,18 +16,17 @@ public:
 
     double operator ()(int i, int j) const;
     double &operator ()(int i, int j);
-    Matrix operator*(const double x);
+    void operator*(const double x);
+    Matrix operator*(const Matrix &B); //for tests only
 
     std::vector<double> operator*(const std::vector<double> &x) const;
     std::vector<double> partly_dot(const std::vector<double> &x);
 
-    std::vector<double> GetCol_WOut_Els(int j, int el) const;
-
-	std::vector<double> GetStr_WOut_Els(int i, int el) const;
-
+    void change_Col(const int j, const int i_begin, const std::vector<double> &x);
+    void add_Identity();
     std::vector<double> getRow(const int i)  ;
 
-    std::vector<double> getCol(const int j);
+    std::vector<double> getCol(const int j, const int i_begin = 0);
     std::vector<double> getRow(const int i)  const;
 
     std::vector<double> getCol(const int j) const;

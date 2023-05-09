@@ -2,7 +2,6 @@
 
 
 
-
 double Matrix::operator ()(int i, int j) const {
     return A[i * N + j];
 }
@@ -21,6 +20,34 @@ std::vector<double> Matrix::operator*(const std::vector<double> &x) const {
     }
     return res;
 }
+Matrix Matrix::operator*(const Matrix &B) { //usable only for tests
+    Matrix Res(0, B.GetN());
+    std::vector<double> string_end(B.GetN()), row(N);
+    double lol=0;
+    for (size_t i = 0; i < M; ++i) {
+        lol = 0;
+        for (size_t k = 0; k < N; ++k) {
+            row[k] = A[i*N + k];
+        }
+        for(size_t j = 0, end = B.GetN(); j < end; ++j) {
+            lol = 0;
+            for(size_t l = 0; l < size(row); ++l) {
+                lol += row[l] * B.getCol(j)[l];
+            }
+            string_end[j] = lol;
+        }
+        Res.SetStringOnEnd(string_end);
+    }
+    return Res;
+}
+
+
+void Matrix::operator*(const double x) {
+    for (size_t i = 0, end = size(A); i < end; ++i) {
+        A[i] *= x;
+    }
+}
+
 
 std::vector<double> Matrix::partly_dot(const std::vector<double> &x) {
     const int N_x = size(x);
@@ -36,23 +63,17 @@ std::vector<double> Matrix::partly_dot(const std::vector<double> &x) {
 
 }
 
-std::vector<double> Matrix::GetCol_WOut_Els(int j, int el) const	{
-    std::vector<double> vec(M - el);
-    for (int i = 0 + el; i < M; ++i){
-        vec[i - el] = A[i * N + j];
+void Matrix::change_Col(const int j, const int i_begin, const std::vector<double> &x) {
+    for (size_t i = i_begin; i < M; ++i) {
+        A[j + i*N] = x[i - i_begin];
     }
-    return vec;
 }
-
-std::vector<double> Matrix::GetStr_WOut_Els(int i, int el) const	{
-    std::vector<double> vec;
-    vec.reserve(N);
-    for (int j = 0 + el; j < N; ++j){
-        vec[j] = A[i * M + j];
+void Matrix::add_Identity() {
+    const int k = N + 1;
+    for (size_t i = 0; i < N; ++i) {
+        A[k * i] += 1;
     }
-    return vec;
 }
-
 
 std::vector<double> Matrix::getRow(const int i) {
     std::vector<double> vec(N);
@@ -63,10 +84,10 @@ std::vector<double> Matrix::getRow(const int i) {
     return vec;
 }
 
-std::vector<double> Matrix::getCol(const int j)  {
-    std::vector<double> vec(M);
-    for (size_t i = 0; i < M; ++i) {
-        vec[i] = A[j + i*N];
+std::vector<double> Matrix::getCol(const int j, const int i_begin)  {
+    std::vector<double> vec(M - i_begin);
+    for (size_t i = i_begin; i < M; ++i) {
+        vec[i - i_begin] = A[j + i*N];
     }
     return vec;
 }

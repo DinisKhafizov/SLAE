@@ -45,3 +45,12 @@ TEST(dense, partly_dot1) {
         std::cout << res[i] << std::endl;
     }
 }
+
+TEST(dense, dot_matrix1) {
+    std::vector<double> a = {1, 2, 2, 3, 4, 5, 7, 8, 11}, b = {7, 6, 1, 3, 5 ,8, 8 , 9, 13, 23, 32, 10};
+    Matrix A(a, 3, 3), B(b, 3, 4), res;
+    res = A * B;
+    A.show();
+    B.show();
+    res.show();
+}

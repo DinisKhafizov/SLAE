@@ -14,7 +14,8 @@ test_Dense.cpp
 tests_Tridiag.cpp
 tests_vect_op.cpp 
 test_GMRES.cpp
-test_cheb.cpp)
+test_cheb.cpp
+test_QR.cpp)
 
 
 # Link test executable against Google Test and our library
