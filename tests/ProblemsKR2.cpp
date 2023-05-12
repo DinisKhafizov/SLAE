@@ -38,7 +38,7 @@ int main() {
     vals[L * (5 * L - 2) - 4] = a; cols[L * (5 * L - 2) - 4] = N - 2;
     vals[L * (5 * L - 2) - 3] = b2; cols[L * (5 * L - 2) - 3] = N - 1;
     rows.back() = rows[N - 1] + 3;
-
+    /*
     CSR A(vals, cols, rows, N);
     std::vector<double> res_si, res_si_opt, res_cheb, res_sym, res_sym_cheb, res1;
     std::ofstream fout1;
@@ -55,12 +55,17 @@ int main() {
         res1 = SIMwCA_next(A, x_0, b, tolerance, lam.first, lam.second + i, 3);
         fout1 << res1[0] << ";" << res1[1] << "\n";
     }
+    */
     
     //second
 
-    std::vector<double> vals2 = {14, 16, 18, 21}, vec_b(4, 4);
+    std::vector<double> vals2 = {14, 16, 18, 21}, vec_b(4, 4), x_02 = {0, 0, 0, 0};
     std::vector<int> cols2 = {0, 1, 2, 3}, rows2 = {0, 1, 2, 3, 4};
     CSR A2(vals2, cols2, rows2, 4);
     double lambda_max = 21, lambda_min = 14;
-    std::vecotr
+    std::pair<std::vector<double>, std::vector<double>> x_1 = SIM_in_proj(A2, x_02, vec_b, tolerance, (0.9*2)/21); Write(x_1, "Proj1.txt");
+    std::pair<std::vector<double>, std::vector<double>> x_2 = SIM_in_proj(A2, x_02, vec_b, tolerance, 2./35); Write(x_2, "Proj2.txt");
+    std::pair<std::vector<double>, std::vector<double>> x_3 = SGD_in_proj(A2, x_02, vec_b, tolerance); Write(x_3, "proj3.txt");
+    std::vector<double> x_4 = SIMwCA_in_proj(A2, x_02, vec_b, tolerance, 14, 21, 3); Write(x_4, "proj4.txt");
+    std::pair<std::vector<double>, std::vector<double>> x_5 = CGD_in_proj(A2, x_02, vec_b, tolerance); Write(x_5, "proj5.txt");
 }

@@ -7,8 +7,8 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 # Add test executables
 add_executable(run_tests 
 test_GaussRev.cpp
-#ProblemsKR2.cpp
-test_IterMethods.cpp
+ProblemsKR2.cpp
+#test_IterMethods.cpp
 tests_CSR.cpp
 test_Dense.cpp
 tests_Tridiag.cpp

@@ -52,15 +52,15 @@ Matrix Ichol_null(const CSR &A) {
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j <= i; ++j) {
             a_ij = A(i, j);
-            if (a_ij != 0) {
-                sum = L.getRow(i, j) * L.getRow(j, j);
-                if (i == j) {
-                    L(i, j) = sqrt(std::abs(a_ij - sum));
-                }
-                else{
-                    L(i, j) = (a_ij - sum)/L(j, j);
-                }
+            //if (a_ij != 0) {
+            sum = L.getRow(i, j) * L.getRow(j, j);
+            if (i == j) {
+                L(i, j) = sqrt(std::abs(a_ij - sum));
             }
+            else{
+                L(i, j) = (a_ij - sum)/L(j, j);
+            }
+            //}
         }
     }
     return L;
