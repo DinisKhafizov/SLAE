@@ -1,8 +1,6 @@
 #ifndef PROB1
 #define PROB1
 
-#include <iostream>
-#include <vector>
 #include <fstream>
 #include <string>
 #include "Vect/VectorOperations.hpp"

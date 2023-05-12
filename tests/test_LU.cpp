@@ -7,8 +7,4 @@ TEST(lu, ichol1) {
     CSR A(vals, cols, rows, 5);
     Matrix L = Ichol_null(A), L_t;
     L_t = L;
-    L.transpose();
-    L_t.show();
-    A.show();
-    (L * L_t).show();
 }
