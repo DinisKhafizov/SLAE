@@ -14,7 +14,7 @@ public:
 
 	CSR(const int n, const int m): ROWS{m}, COLS{n}, values(m * n), cols(0), rows(1, 0) {} 
 	CSR(const std::vector<double> &val, const std::vector<int> &col, const std::vector<int> &row, const int Ncols):values{val}, 
-	cols{col}, rows{row}, ROWS{size(row) - 1}, COLS{Ncols} {}
+	cols{col}, rows{row}, COLS{Ncols}, ROWS{static_cast<int>(size(row)) - 1} {}
 
 	double operator()(int i, int j) const;
 
