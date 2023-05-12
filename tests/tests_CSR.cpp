@@ -100,4 +100,29 @@ TEST(csr, matrix_multi_vec3) {
     }
 }
 
-
+TEST(csr, csr_show1) {
+    std::vector<double> values = {5., 3., 2., 7., 4.};
+    std::vector<int> cols = {0, 1, 2, 3, 4};
+    std::vector<int> rows = {0, 5};
+    std::vector<double> f = {23., 35.21, 123.99, 213.23, 864.23};
+    std::vector<double> check = {5418.14}, res;
+    int Ncols = 5;
+    CSR A(values, cols, rows, Ncols);
+}
+TEST(csr, csr_show2) {
+    std::vector<double> values = {10., 200., 35., 43., 52., 61., 47., 38., 59., 110., 511., 1200., 135., 141., 15.3};
+    std::vector<int> cols = {0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4};
+    std::vector<int> rows = {0, 5, 10, 15};
+    std::vector<double> f = {72., 54., 99., 12.123, 3};
+    std::vector<double> check = {15662.289, 11737.257, 116712.243}, res;
+    CSR A(values, cols, rows, 7);
+}
+TEST(csr, transp1) {
+    std::vector<double> values = {10., 200., 35., 43., 52., 61., 47., 38., 59., 110., 511., 1200., 135., 141., 15.3};
+    std::vector<int> cols = {0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4};
+    std::vector<int> rows = {0, 5, 10, 15};
+    std::vector<double> f = {72., 54., 99., 12.123, 3};
+    std::vector<double> check = {15662.289, 11737.257, 116712.243}, res;
+    CSR A(values, cols, rows, 7);
+    A.transpose();
+}

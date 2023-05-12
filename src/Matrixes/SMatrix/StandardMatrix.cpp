@@ -91,10 +91,17 @@ std::vector<double> Matrix::getCol(const int j, const int i_begin)  {
     }
     return vec;
 }
-std::vector<double> Matrix::getRow(const int i) const {
-    std::vector<double> vec(N);
+std::vector<double> Matrix::getRow(const int i, const int j_end) const {
+    std::vector<double> vec(j_end);
     const int k = i * N;
-    for (int j = 0; j < N; ++j) {
+    if (j_end == 0) {
+        vec.resize(N);
+        for (int j = 0; j < N; ++j) {
+            vec[j] = A[k + j];
+        }
+        return vec;
+    }
+    for (int j = 0; j < j_end; ++j) {
         vec[j] = A[k + j];
     }
     return vec;

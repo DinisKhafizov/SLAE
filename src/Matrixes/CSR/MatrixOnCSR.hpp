@@ -22,6 +22,7 @@ public:
 	void operator *(double x);
 
 	std::vector<double> getDiag() const;
+	CSR transpose() const;
 
 	int GetN() const;
 	std::vector<double> &GetVal();
@@ -30,6 +31,8 @@ public:
 	std::vector<double> GetVal() const;
 	std::vector<int> GetRow()  const;
 	std::vector<int> GetCol()  const;
+
+	void show();
 	
 };
 #endif //CSRMATRIX

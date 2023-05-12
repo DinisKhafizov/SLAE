@@ -36,6 +36,37 @@ std::vector<double> CSR::getDiag() const { //only for square matrix!
 	return res;
 }
 
+CSR CSR::transpose() const {
+        uint32_t Nonzero = size(values);
+        std::vector<double> tmatrix_els(Nonzero);
+        std::vector<int> tCols(Nonzero);
+        std::vector<int> tRows(COLS + 1);
+        for (uint32_t i = 0; i < Nonzero; ++i) tRows[cols[i] + 1]++;
+        uint32_t S = 0;
+        uint32_t tmp;
+        for (uint32_t i = 1; i <= COLS; ++i) {
+            tmp = tRows[i];
+            tRows[i] = S;
+            S += tmp;
+        }
+        uint32_t j1, j2, Col, RIndex, IIndex;
+        double V;
+        for (uint32_t i = 0; i < ROWS; ++i) {
+            j1 = rows[i];
+            j2 = rows[i+1];
+            Col = i;
+            for (uint32_t j = j1; j < j2; ++j) {
+                V = values[j];
+                RIndex = cols[j];
+                IIndex = tRows[RIndex + 1];
+                tmatrix_els[IIndex] = V;
+                tCols[IIndex] = Col;
+                tRows[RIndex + 1]++;
+            }
+        }
+        return CSR(tmatrix_els, tCols, tRows, ROWS);
+}
+
 int CSR::GetN() const {
 	return ROWS;
 }
@@ -56,5 +87,14 @@ std::vector<int> CSR::GetRow()  const{
 }
 std::vector<int> CSR::GetCol()  const{
 	return cols;
+}
+void CSR::show() { //only for test
+	CSR RES(values, cols, rows, COLS);
+	for(size_t i = 0; i < ROWS; ++i) {
+		for(size_t j = 0; j < COLS; ++j) {
+			std::cout << RES(i, j) << " ";
+		}
+		std::cout << std::endl;
+	}
 }
 	

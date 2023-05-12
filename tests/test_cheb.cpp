@@ -6,7 +6,7 @@ TEST(cheb, numb1) {
     int n = 1;
     ns1 = Numbers(n);
     for (int i = 0; i < size(ns); ++i) {
-        ns[i] == ns1[i];
+        ASSERT_NEAR(ns[i], ns1[i], 0.001);
     }
 }
 TEST(cheb, numb2) {
@@ -14,7 +14,7 @@ TEST(cheb, numb2) {
     int n = 2;
     ns1 = Numbers(n);
     for (int i = 0; i < size(ns); ++i) {
-        ns[i] == ns1[i];
+        ASSERT_NEAR(ns[i], ns1[i], 0.001);
     }
 }
 TEST(cheb, numb3) {
@@ -22,7 +22,7 @@ TEST(cheb, numb3) {
     int n = 3;
     ns1 = Numbers(n);
     for (int i = 0; i < size(ns); ++i) {
-        ns[i] == ns1[i];
+        ASSERT_NEAR(ns[i], ns1[i], 0.001);
     }
 }
 TEST(cheb, numb4) {
@@ -30,6 +30,6 @@ TEST(cheb, numb4) {
     int n = 4;
     ns1 = Numbers(n);
     for (int i = 0; i < size(ns); ++i) {
-        ns[i] == ns1[i];
+        ASSERT_NEAR(ns[i], ns1[i], 0.001);
     }
 }

@@ -9,13 +9,15 @@ add_executable(run_tests
 test_GaussRev.cpp
 #ProblemsKR2.cpp
 test_IterMethods.cpp
-#tests_CSR.cpp
+tests_CSR.cpp
 test_Dense.cpp
 tests_Tridiag.cpp
 tests_vect_op.cpp 
 test_GMRES.cpp
 test_cheb.cpp
-test_QR.cpp)
+test_QR.cpp
+test_BiCG.cpp
+test_LU.cpp)
 
 
 # Link test executable against Google Test and our library

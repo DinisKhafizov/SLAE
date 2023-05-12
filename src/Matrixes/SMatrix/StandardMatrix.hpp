@@ -27,7 +27,7 @@ public:
     std::vector<double> getRow(const int i)  ;
 
     std::vector<double> getCol(const int j, const int i_begin = 0);
-    std::vector<double> getRow(const int i)  const;
+    std::vector<double> getRow(const int i, const int j_end = 0)  const;
 
     std::vector<double> getCol(const int j) const;
     std::vector<double> get_vals() const;
